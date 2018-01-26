@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">MeuApp</string>
+
+    <!-- LABEL-->
+    <string name="label_welcome">Olá %s</string>
+    <string name="label_enter">Entrar</string>
+    <string name="label_forgot_password">Esqueci a senha</string>
+    <string name="label_register">Registre-se</string>
+
+    <!-- ERROS-->
+    <string name="error_field_email">Falta o email</string>
+
+    <!-- DICAS-->
+    <string name="hint_email">Entre seu email</string>
+    <string name="hint_password">Entre seu password</string>
+    <string name="error_field_password">A senha não pode ser vazia</string>
+
+</resources>
