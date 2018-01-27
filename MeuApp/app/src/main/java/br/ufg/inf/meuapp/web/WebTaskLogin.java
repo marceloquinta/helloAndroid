@@ -10,10 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.ufg.inf.meuapp.R;
+import br.ufg.inf.meuapp.model.User;
 
 public class WebTaskLogin extends WebTaskBase {
 
-    private static final String SERVICE_URL = "/";
+    private static final String SERVICE_URL = "login";
     private String email;
     private String password;
 
@@ -29,7 +30,17 @@ public class WebTaskLogin extends WebTaskBase {
     @Override
     void handleResponse(String response) {
         try {
-            String id = new JSONObject(response).getString("id");
+            String username = new JSONObject(response).getString("username");
+            String token = new JSONObject(response).getString("token");
+            String photoUrl = new JSONObject(response).getString("photoUrl");
+
+            User user = new User();
+            user.setUsername(username);
+            user.setToken(token);
+            user.setPhotoUrl(photoUrl);
+
+            EventBus.getDefault().post(user);
+
         } catch (JSONException e) {
             EventBus.getDefault().post(new Error(getContext().getString(R.string.error_field_email)));
         }

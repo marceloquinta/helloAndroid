@@ -1,10 +1,8 @@
-package br.ufg.inf.meuapp;
+package br.ufg.inf.meuapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,9 +11,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import br.ufg.inf.meuapp.data.SessionHandler;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import br.ufg.inf.meuapp.R;
+import br.ufg.inf.meuapp.data.SessionHandler;
+import br.ufg.inf.meuapp.model.User;
+import br.ufg.inf.meuapp.web.WebTaskLogin;
+
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ProgressDialog pd;
 
@@ -27,14 +31,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button loginButton = findViewById(R.id.button_login);
         loginButton.setOnClickListener(this);
 
-        SessionHandler sessionHandler = new SessionHandler();
-        String email = sessionHandler.getEmail(this);
-
-        EditText fieldEmail = findViewById(R.id.field_email);
-        fieldEmail.setText(email);
-
-        sessionHandler.removeSession(this);
-
         Log.d("LIFECYCLE","CRIOU");
     }
 
@@ -43,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
         hideDialog();
         Log.d("LIFECYCLE","INICIOU");
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -61,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         Log.d("LIFECYCLE","PAROU");
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -103,54 +101,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         hideKeyboard();
 
         EditText fieldEmail = findViewById(R.id.field_email);
-        String text = fieldEmail.getText().toString();
+        String email = fieldEmail.getText().toString();
 
         EditText fieldPassword = findViewById(R.id.field_password);
         String password = fieldPassword.getText().toString();
 
-        if("".equals(text)){
-            Snackbar.make(view,R.string.error_field_email,Snackbar.LENGTH_LONG).show();
-            return;
-        }
+        if(isFieldsValidated(email,password)){
+            showDialog();
 
-        if("".equals(password)){
-            Snackbar.make(view,R.string.error_field_password,Snackbar.LENGTH_LONG).show();
-            return;
+            WebTaskLogin taskLogin = new WebTaskLogin(this, email,password);
+            taskLogin.execute();
         }
+    }
 
-        showDialog();
+    @Subscribe
+    public void onError(Error error){
+        failedLogin(error.getMessage());
+    }
 
-        if("teste".equals(text) && "teste".equals(password)){
-            hideDialog();
-            loginComSucesso();
-        }else{
-            hideDialog();
-            Snackbar.make(view,R.string.error_field_credentials,Snackbar.LENGTH_LONG).show();
-        }
+    @Subscribe
+    public void onUser(User user){
+        SessionHandler sessionHandler = new SessionHandler();
+        sessionHandler.saveSession(user,this);
+        loginComSucesso();
+    }
+
+
+    private void failedLogin(String errorMessage){
+        hideDialog();
+        Snackbar.make(getCurrentFocus(),errorMessage,Snackbar.LENGTH_LONG).show();
     }
 
     private void loginComSucesso() {
 
-        EditText fieldEmail = findViewById(R.id.field_email);
-        String text = fieldEmail.getText().toString();
+        hideDialog();
+        finish();
+    }
 
-        EditText fieldPassword = findViewById(R.id.field_password);
-        String password = fieldPassword.getText().toString();
+    public boolean isFieldsValidated(String text, String password) {
+        if("".equals(text)){
+            Snackbar.make(getCurrentFocus(),R.string.error_field_email,Snackbar.LENGTH_LONG).show();
+            return false;
+        }
 
-        SessionHandler sessionHandler = new SessionHandler();
-        sessionHandler.saveSession(text,password,this);
+        if("".equals(password)){
+            Snackbar.make(getCurrentFocus(),R.string.error_field_password,Snackbar.LENGTH_LONG).show();
+            return false;
+        }
 
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                Intent myIntent = new Intent(getApplicationContext(), SecondActivity.class);
-
-                EditText fieldEmail = findViewById(R.id.field_email);
-                String text = fieldEmail.getText().toString();
-
-                myIntent.putExtra("nome",text);
-                startActivity(myIntent);
-                finish();
-            }
-        }, 4000);
+        return true;
     }
 }

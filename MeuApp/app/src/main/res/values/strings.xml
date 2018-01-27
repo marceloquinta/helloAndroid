@@ -15,5 +15,7 @@
     <string name="hint_password">Entre seu password</string>
     <string name="error_field_password">A senha não pode ser vazia</string>
     <string name="error_field_credentials">Credenciais inválidas</string>
+    <string name="error_connection">Você está com problemas de conexão com a internet</string>
+    <string name="error_no_user">Não há usuário logado.</string>
 
 </resources>

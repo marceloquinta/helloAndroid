@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
+import br.ufg.inf.meuapp.R;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,8 +23,8 @@ import okhttp3.Response;
 
 public abstract class WebTaskBase extends AsyncTask<Void, Void, Void> {
 
-    private static int TIMEOUT = 60;
-    private static String BASE_URL = "https://www.uol.com.br";
+    private static int TIMEOUT = 20;
+    private static String BASE_URL = "http://private-54aacf-todo87.apiary-mock.com/";
 
     private String serviceURL;
     private Context context;
@@ -43,8 +44,8 @@ public abstract class WebTaskBase extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
 
         if(!isOnline()){
-            error = new Error("Você está com problemas de conexão com a internet");
-            responseString = null;
+            error = new Error(context.getString(R.string.error_connection));
+            responseString = "";
             return null;
         }
 
