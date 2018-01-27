@@ -3,11 +3,10 @@ package br.ufg.inf.meuapp.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -15,6 +14,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.List;
 
 import br.ufg.inf.meuapp.R;
+import br.ufg.inf.meuapp.adapter.TasksAdapter;
 import br.ufg.inf.meuapp.data.SessionHandler;
 import br.ufg.inf.meuapp.model.Task;
 import br.ufg.inf.meuapp.model.User;
@@ -24,6 +24,8 @@ public class UserActivity extends AppCompatActivity {
 
     private User user;
 
+    RecyclerView myList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,12 @@ public class UserActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        myList = findViewById(R.id.recycler_tasks);
+        myList.setLayoutManager(new LinearLayoutManager(
+                this,LinearLayoutManager.VERTICAL,
+                false));
+        myList.setAdapter(new TasksAdapter(this));
     }
 
     @Override
@@ -56,9 +64,9 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void initializeScreenFields() {
-        getSupportActionBar().setTitle(user.getUsername());
-        ImageView imageView = findViewById(R.id.imageview_user);
-        Picasso.with(this).load(user.getPhotoUrl()).into(imageView);
+        getSupportActionBar().setTitle(
+                getString(R.string.label_tasks,user.getUsername())
+        );
     }
 
 
@@ -75,8 +83,7 @@ public class UserActivity extends AppCompatActivity {
 
     @Subscribe
     public void handleList(List<Task> taskList){
-        for(Task task : taskList){
-            Log.d("", task.getName());
-        }
+        ( (TasksAdapter) myList.getAdapter() ).setTaskList(taskList);
+        myList.getAdapter().notifyDataSetChanged();
     }
 }

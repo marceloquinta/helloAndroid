@@ -16,11 +16,10 @@
         android:elevation="4dp" />
 
 
-    <ImageView
-        android:id="@+id/imageview_user"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
         android:layout_below="@id/toolbar"/>
 
 </RelativeLayout>

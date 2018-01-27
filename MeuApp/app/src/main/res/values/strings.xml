@@ -7,6 +7,8 @@
     <string name="label_forgot_password">Esqueci a senha</string>
     <string name="label_register">Registre-se</string>
 
+    <string name="label_tasks">Tarefas de %s</string>
+
     <!-- ERROS-->
     <string name="error_field_email">Falta o email</string>
 
