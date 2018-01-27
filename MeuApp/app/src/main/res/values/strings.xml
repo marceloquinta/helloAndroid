@@ -17,5 +17,6 @@
     <string name="error_field_credentials">Credenciais inválidas</string>
     <string name="error_connection">Você está com problemas de conexão com a internet</string>
     <string name="error_no_user">Não há usuário logado.</string>
+    <string name="error_json">A resposta do servidor não está de acordo com o esperado.</string>
 
 </resources>

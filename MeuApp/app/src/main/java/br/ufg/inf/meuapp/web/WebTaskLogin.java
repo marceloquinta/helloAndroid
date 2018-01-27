@@ -2,8 +2,10 @@ package br.ufg.inf.meuapp.web;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -30,18 +32,21 @@ public class WebTaskLogin extends WebTaskBase {
     @Override
     void handleResponse(String response) {
         try {
-            String username = new JSONObject(response).getString("username");
-            String token = new JSONObject(response).getString("token");
-            String photoUrl = new JSONObject(response).getString("photoUrl");
+            Gson gson = new Gson();
+            User user = gson.fromJson(response, User.class);
 
-            User user = new User();
-            user.setUsername(username);
-            user.setToken(token);
-            user.setPhotoUrl(photoUrl);
+//            String username = new JSONObject(response).getString("username");
+//            String token = new JSONObject(response).getString("token");
+//            String photoUrl = new JSONObject(response).getString("photoUrl");
+//
+//            User user = new User();
+//            user.setUsername(username);
+//            user.setToken(token);
+//            user.setPhotoUrl(photoUrl);
 
             EventBus.getDefault().post(user);
 
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
             EventBus.getDefault().post(new Error(getContext().getString(R.string.error_field_email)));
         }
     }
