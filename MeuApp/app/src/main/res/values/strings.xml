@@ -14,5 +14,6 @@
     <string name="hint_email">Entre seu email</string>
     <string name="hint_password">Entre seu password</string>
     <string name="error_field_password">A senha não pode ser vazia</string>
+    <string name="error_field_credentials">Credenciais inválidas</string>
 
 </resources>

@@ -13,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import br.ufg.inf.meuapp.data.SessionHandler;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ProgressDialog pd;
@@ -24,6 +26,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button loginButton = findViewById(R.id.button_login);
         loginButton.setOnClickListener(this);
+
+        SessionHandler sessionHandler = new SessionHandler();
+        String email = sessionHandler.getEmail(this);
+
+        EditText fieldEmail = findViewById(R.id.field_email);
+        fieldEmail.setText(email);
+
+        sessionHandler.removeSession(this);
 
         Log.d("LIFECYCLE","CRIOU");
     }
@@ -109,6 +119,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         showDialog();
+
+        if("teste".equals(text) && "teste".equals(password)){
+            hideDialog();
+            loginComSucesso();
+        }else{
+            hideDialog();
+            Snackbar.make(view,R.string.error_field_credentials,Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void loginComSucesso() {
+
+        EditText fieldEmail = findViewById(R.id.field_email);
+        String text = fieldEmail.getText().toString();
+
+        EditText fieldPassword = findViewById(R.id.field_password);
+        String password = fieldPassword.getText().toString();
+
+        SessionHandler sessionHandler = new SessionHandler();
+        sessionHandler.saveSession(text,password,this);
 
         new Handler().postDelayed(new Runnable() {
             public void run() {
